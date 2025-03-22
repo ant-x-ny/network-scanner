@@ -1,0 +1,7 @@
+Device IP: 192.168.11.26, MAC: 7E:49:35:23:35:80, Vendor: Unknown, OS: Linux/macOS/Android 	 Hostname: Unknown Host, Open Ports: [53]
+Device IP: 192.168.11.172, MAC: 7E:54:74:5A:18:F4, Vendor: Unknown, OS: Linux/macOS/Android 	 Hostname: Unknown Host, Open Ports: []
+Device IP: 192.168.11.33, MAC: 10:68:38:c4:00:ad, Vendor: AzureWave Technology Inc., OS: Windows 	 Hostname: sectorclear, Open Ports: [135, 139, 445]
+
+Detected Anomalies:
+⚠️ Unknown Device Detected - IP: 192.168.11.26, MAC: 7E:49:35:23:35:80
+⚠️ Unknown Device Detected - IP: 192.168.11.172, MAC: 7E:54:74:5A:18:F4

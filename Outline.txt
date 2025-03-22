@@ -1,0 +1,16 @@
+Steps in pen testing a system or network:
+
+1. Planning-scope determination- permission obtaining
+
+2. Reconnaissance- passive- active
+
+3. Vulnerability analysis
+
+4. Exploitation- attack simulation
+
+5. Post-exploitation- damage analysis
+
+6. Documenting and Reporting
+
+7. Remediation and Retesting
+
