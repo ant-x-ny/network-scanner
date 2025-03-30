@@ -24,12 +24,11 @@ class App(customtkinter.CTk):
         
         self.stop_event = threading.Event()  # Stop signal for all spoofing threads
         self.threads = []
-        # self.devices = [{'ip': '192.168.18.1', 'mac': '64:2c:ac:dc:28:e8', 'vendor': 'HUAWEI TECHNOLOGIES CO.,LTD', 'os': 'Linux/macOS/Android', 'hostname': 'Unknown Host', 'open_ports': [80, 53]}, {'ip': '192.168.18.8', 'mac': 'e8:5a:8b:66:1c:21', 'vendor': 'Xiaomi Communications Co Ltd', 'os': 'Linux/macOS/Android', 'hostname': 'Unknown Host', 'open_ports': []}, {'ip': '192.168.18.87', 'mac': 'd4:86:60:22:3e:ce', 'vendor': 'Arcadyan Corporation', 'os': 'Unknown', 'hostname': 'Unknown Host', 'open_ports': []}, {'ip': '192.168.18.199', 'mac': '10:68:38:c4:00:ad', 'vendor': 'AzureWave Technology Inc.', 'os': 'Windows', 'hostname': 'sectorclear', 'open_ports': [135, 139, 445]}]
         global globalScanned
         self.useNmap = tk.IntVar(self, 0)
         
         # self.network_addr = tk.StringVar(self, "e.g., 192.168.1.0/24")
-        self.network_addr = tk.StringVar(self, "e.g., 192.168.1.0/24")
+        self.network_addr = tk.StringVar(self, "192.168.1.0/24")
         self.router_ip = self.get_router_ip()
         if self.router_ip != None:
             parts = self.router_ip.strip().split(".")
@@ -212,30 +211,40 @@ class App(customtkinter.CTk):
         self.stop_event.clear()  # Ensure stop signal is reset
         self.threads = []
         
-        if self.get_router_ip() != None:
+        
+        if self.validate_route_cidr(self.get_router_ip()):
             self.router_ip = self.get_router_ip()
-        elif self.find_router_ip(network) != None:
-            self.router_ip = self.find_router_ip(network)
+            print("GOT! "+ str(self.get_router_ip()))
+        # elif self.validate_route_cidr(self.find_router_ip(str(self.network_addr.get()))):
+        #     self.router_ip = self.find_router_ip(str(self.network_addr.get()))
+        #     print("FOUND!")
         else:
             # self.f_Block()
+            # print("get: " + str(self.get_router_ip()))
+            # print("find: " + self.find_router_ip(str(self.network_addr.get())))
+            # print("Router Ip Failure")
+            self.router_ip = "192.168.180.93" 
             # return
-            self.router_ip = self.router_ip = "192.168.11.26" 
+        
+        # self.router_ip = "192.168.12.1"
+        # self.router_mac = "46:DE:20:F4:82:A7"
+        # self.our_mac = "10:68:38:c4:00:ad"
         
         self.router_mac = ""
         for device in self.devices:
+            print(device['ip']+" router: "+ self.router_ip)
             if device['ip'] == self.router_ip:
                 self.router_mac = device['mac']
         if self.router_mac == "":
+            print("Router mac Failure")
             self.f_Block()
             return
         try:
             self.our_mac = get_if_hwaddr(conf.iface)
         except:
             self.f_Block()
+            print("Our Mac Failure")
             return
-        # self.router_ip = "192.168.134.24"
-        # self.router_mac = "46:DE:20:F4:82:A7"
-        # self.our_mac = "10:68:38:c4:00:ad"
         
         for entry in Block_list:
             target_ip, target_mac = entry.split("#")
@@ -556,6 +565,18 @@ class App(customtkinter.CTk):
         # Regular expression to match IPv4/CIDR notation
         # pattern = r"^((25[0-5]|2[0-4][0-9]|1?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|1?[0-9][0-9]?)/(3[0-2]|[12]?[0-9])$"
         pattern = r"^((25[0-5]|2[0-4][0-9]|1?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|1?[0-9][0-9]?)/((3[0-2]|[12]?[0-9])|((25[0-5]|2[0-4][0-9]|1?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|1?[0-9][0-9]?))$"
+        
+        
+        # Check if input matches the pattern
+        return bool(re.match(pattern, input_string))
+
+    def validate_route_cidr(self, input_string):
+        """
+        Validate if the given input string is in the format 'x.x.x.x/x', e.g., '192.168.18.0/24'.
+        """
+        # Regular expression to match IPv4/CIDR notation
+        # pattern = r"^((25[0-5]|2[0-4][0-9]|1?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|1?[0-9][0-9]?)/(3[0-2]|[12]?[0-9])$"
+        pattern = r"^((25[0-5]|2[0-4][0-9]|1?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|1?[0-9][0-9]?)$"
         
         
         # Check if input matches the pattern
